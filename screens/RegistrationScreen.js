@@ -5,8 +5,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Platform,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 const initialState = {
@@ -20,48 +20,56 @@ export const RegistrationScreen = ({
   keyboardHide,
   setIsShowKeyboard,
 }) => {
-  const [inputValue, setInputValue] = useState(initialState);
+  const [inputState, setInputState] = useState(initialState);
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
-    // >
-
-    <View
-      style={{ ...styles.container, paddingBottom: isShowKeyboard ? 0 : 66 }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.form}>
-        <Text style={styles.regTitle}>Регистрация</Text>
-        <TextInput
-          style={styles.input}
-          placeholder={"Логин"}
-          onFocus={() => setIsShowKeyboard(true)}
-          onChangeText={(value) =>
-            setInputValue((prev) => ({ ...prev, value }))
-          }
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={"Адрес электронной почты"}
-          onFocus={() => setIsShowKeyboard(true)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={"Пароль"}
-          secureTextEntry={true}
-          onFocus={() => setIsShowKeyboard(true)}
-        />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.btn}
-          onPress={keyboardHide}
-        >
-          <Text style={styles.regBtnText}>Зарегистрироваться</Text>
-        </TouchableOpacity>
+      <View
+        style={{ ...styles.container, paddingBottom: isShowKeyboard ? 0 : 66 }}
+      >
+        <View style={styles.form}>
+          <Text style={styles.regTitle}>Регистрация</Text>
+          <TextInput
+            style={styles.input}
+            placeholder={"Логин"}
+            value={inputState.login}
+            onFocus={() => setIsShowKeyboard(true)}
+            onChangeText={(value) =>
+              setInputState((prev) => ({ ...prev, login: value }))
+            }
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={"Адрес электронной почты"}
+            value={inputState.email}
+            onFocus={() => setIsShowKeyboard(true)}
+            onChangeText={(value) =>
+              setInputState((prev) => ({ ...prev, email: value }))
+            }
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={"Пароль"}
+            secureTextEntry={true}
+            value={inputState.password}
+            onFocus={() => setIsShowKeyboard(true)}
+            onChangeText={(value) =>
+              setInputState((prev) => ({ ...prev, password: value }))
+            }
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.btn}
+            onPress={keyboardHide}
+          >
+            <Text style={styles.regBtnText}>Зарегистрироваться</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.bottomText}>Уже есть аккаунт? Войти</Text>
       </View>
-      <Text style={styles.bottomText}>Уже есть аккаунт? Войти</Text>
-    </View>
-    // </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -76,8 +84,7 @@ const styles = StyleSheet.create({
   form: { marginHorizontal: 16 },
   regTitle: {
     color: "#212121",
-    fontFamily: "Roboto",
-    fontWeight: "500",
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   regBtnText: {
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
 
@@ -112,7 +119,7 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     textAlign: "center",
-    fontFamily: "Roboto",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
 

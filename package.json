@@ -9,7 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "eslint-plugin-react-hooks": "^4.6.0",
     "expo": "~46.0.6",
+    "expo-font": "~10.2.0",
+    "expo-modules-core": "~0.11.3",
+    "expo-splash-screen": "^0.16.1",
     "expo-status-bar": "~1.4.0",
     "react": "18.0.0",
     "react-native": "0.69.4"
