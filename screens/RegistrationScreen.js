@@ -1,12 +1,13 @@
 import { useState } from "react";
 import {
   StyleSheet,
+  ImageBackground,
   TextInput,
   View,
   Text,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 
 const initialState = {
@@ -15,65 +16,83 @@ const initialState = {
   password: "",
 };
 
-export const RegistrationScreen = ({
-  isShowKeyboard,
-  keyboardHide,
-  setIsShowKeyboard,
-}) => {
+export const RegistrationScreen = ({ navigation }) => {
   const [inputState, setInputState] = useState(initialState);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View
-        style={{ ...styles.container, paddingBottom: isShowKeyboard ? 0 : 66 }}
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <ImageBackground
+        style={styles.background}
+        source={require("../assets/images/Photo-BG.png")}
       >
-        <View style={styles.form}>
-          <Text style={styles.regTitle}>Регистрация</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={"Логин"}
-            value={inputState.login}
-            onFocus={() => setIsShowKeyboard(true)}
-            onChangeText={(value) =>
-              setInputState((prev) => ({ ...prev, login: value }))
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder={"Адрес электронной почты"}
-            value={inputState.email}
-            onFocus={() => setIsShowKeyboard(true)}
-            onChangeText={(value) =>
-              setInputState((prev) => ({ ...prev, email: value }))
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder={"Пароль"}
-            secureTextEntry={true}
-            value={inputState.password}
-            onFocus={() => setIsShowKeyboard(true)}
-            onChangeText={(value) =>
-              setInputState((prev) => ({ ...prev, password: value }))
-            }
-          />
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.btn}
-            onPress={keyboardHide}
+        <View
+          style={{
+            ...styles.container,
+            paddingBottom: isShowKeyboard ? 0 : 66,
+          }}
+        >
+          <View style={styles.form}>
+            <Text style={styles.regTitle}>Регистрация</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={"Логин"}
+              value={inputState.login}
+              onFocus={() => setIsShowKeyboard(true)}
+              onChangeText={(value) =>
+                setInputState((prev) => ({ ...prev, login: value }))
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder={"Адрес электронной почты"}
+              value={inputState.email}
+              onFocus={() => setIsShowKeyboard(true)}
+              onChangeText={(value) =>
+                setInputState((prev) => ({ ...prev, email: value }))
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder={"Пароль"}
+              secureTextEntry={true}
+              value={inputState.password}
+              onFocus={() => setIsShowKeyboard(true)}
+              onChangeText={(value) =>
+                setInputState((prev) => ({ ...prev, password: value }))
+              }
+            />
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.btn}
+              onPress={keyboardHide}
+            >
+              <Text style={styles.regBtnText}>Зарегистрироваться</Text>
+            </TouchableOpacity>
+          </View>
+          <Text
+            style={styles.bottomText}
+            onPress={() => navigation.navigate("Login")}
           >
-            <Text style={styles.regBtnText}>Зарегистрироваться</Text>
-          </TouchableOpacity>
+            Уже есть аккаунт? Войти
+          </Text>
         </View>
-        <Text style={styles.bottomText}>Уже есть аккаунт? Войти</Text>
-      </View>
-    </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "flex-end",
+  },
   container: {
     paddingTop: 92,
     width: "100%",

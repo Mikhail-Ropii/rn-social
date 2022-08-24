@@ -1,26 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  Keyboard,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-} from "react-native";
-import { RegistrationScreen } from "./screens/RegistrationScreen";
-import { LoginScreen } from "./screens/LoginScreen";
+import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+
+import { UseRoute } from "./router";
 
 export default function App() {
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [fontsLoaded] = useFonts({
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
   });
+
+  const routing = UseRoute(true);
 
   useEffect(() => {
     async function prepare() {
@@ -40,34 +34,15 @@ export default function App() {
     return null;
   }
 
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
   return (
-    <TouchableWithoutFeedback
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
       onLayout={onLayoutRootView}
-      onPress={keyboardHide}
     >
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.background}
-          source={require("./assets/images/Photo-BG.png")}
-        >
-          <StatusBar style="auto" />
-          <RegistrationScreen
-            isShowKeyboard={isShowKeyboard}
-            keyboardHide={keyboardHide}
-            setIsShowKeyboard={setIsShowKeyboard}
-          />
-          {/* <LoginScreen
-            isShowKeyboard={isShowKeyboard}
-            keyboardHide={keyboardHide}
-            setIsShowKeyboard={setIsShowKeyboard}
-          /> */}
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+      <StatusBar style="auto" />
+      <NavigationContainer>{routing}</NavigationContainer>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -75,10 +50,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  background: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "flex-end",
   },
 });
