@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RegistrationScreen } from "./screens/RegistrationScreen";
 import { LoginScreen } from "./screens/LoginScreen";
 import { PostsScreen } from "./screens/mainScreens/PostsScreen";
-import { CreateScreen } from "./screens/mainScreens/CreatePostsScreen";
+import { CreatePostsScreen } from "./screens/mainScreens/CreatePostsScreen";
 import { ProfileScreen } from "./screens/mainScreens/ProfileScreen";
 import { StyleSheet, View } from "react-native";
 //icons
@@ -68,7 +68,9 @@ export const UseRoute = (isAuth) => {
       />
       <MainTab.Screen
         options={{
-          headerShown: false,
+          headerTitleAlign: "center",
+          headerTitleStyle: headerTitleStyle,
+          headerTitle: "Создать публикацию",
           tabBarIcon: (focused, color, size) => (
             <View style={styles.addIcon}>
               <Ionicons name="add" size={24} color={color} />
@@ -76,7 +78,7 @@ export const UseRoute = (isAuth) => {
           ),
         }}
         name="Create"
-        component={CreateScreen}
+        component={CreatePostsScreen}
       />
       <MainTab.Screen
         options={{
