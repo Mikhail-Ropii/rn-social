@@ -12,7 +12,7 @@ import {
 import { Camera } from "expo-camera";
 import { Fontisto } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
-// import * as Location from "expo-location";
+import * as Location from "expo-location";
 
 const initialState = {
   title: "",
@@ -26,20 +26,21 @@ export const CreatePostsScreen = ({ navigation }) => {
   const [location, setLocation] = useState();
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const keyboardHide = () => {
+  const keyboardHide = async () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-  };
-
-  const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
-    // const location = await Location.getCurrentPositionAsync();
-    // setLocation(location);
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync();
+    setLocation(location);
+    navigation.navigate("Posts");
+    setInputState(initialState);
   };
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
-
   if (!permission) {
     return <View />;
   }
@@ -47,6 +48,11 @@ export const CreatePostsScreen = ({ navigation }) => {
   if (!permission.granted) {
     requestPermission();
   }
+
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    setPhoto(photo.uri);
+  };
 
   // const reTakePhoto = () => {
   //   setPhoto();

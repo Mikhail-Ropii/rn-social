@@ -30,7 +30,7 @@ export const UseRoute = (isAuth) => {
           }}
           name="Login"
         >
-          {() => <LoginScreen {...setIsAuth} />}
+          {LoginScreen}
         </AuthNavigations.Screen>
       </AuthNavigations.Navigator>
     );
@@ -50,15 +50,14 @@ export const UseRoute = (isAuth) => {
   return (
     <MainTab.Navigator
       initialRouteName="Posts"
-      screenOptions={{ tabBarShowLabel: false }}
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: { height: 71, paddingHorizontal: 62 },
+      }}
     >
       <MainTab.Screen
         options={{
-          headerRightContainerStyle: { paddingRight: 16 },
-          headerTitleAlign: "center",
-          headerTitleStyle: headerTitleStyle,
-          headerTitle: "Публикации",
-          headerRight: () => <Feather name="log-out" size={24} color="black" />,
+          headerShown: false,
           tabBarIcon: (focused, color, size) => (
             <Ionicons name="grid-outline" size={24} color={color} />
           ),
@@ -68,12 +67,13 @@ export const UseRoute = (isAuth) => {
       />
       <MainTab.Screen
         options={{
+          unmountOnBlur: true,
           headerTitleAlign: "center",
           headerTitleStyle: headerTitleStyle,
           headerTitle: "Создать публикацию",
           tabBarIcon: (focused, color, size) => (
             <View style={styles.addIcon}>
-              <Ionicons name="add" size={24} color={color} />
+              <Ionicons name="add" size={24} color={"#ffffff"} />
             </View>
           ),
         }}
