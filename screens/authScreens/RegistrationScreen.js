@@ -8,7 +8,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
+import { authSignUp } from "../../redux/auth/authOperations";
+import { useDispatch } from "react-redux";
+import * as DocumentPicker from "expo-document-picker";
 
 const initialState = {
   login: "",
@@ -16,34 +20,60 @@ const initialState = {
   password: "",
 };
 
-export const LoginScreen = ({ navigation }) => {
+export const RegistrationScreen = ({ navigation }) => {
   const [inputState, setInputState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [avatar, setAvatar] = useState();
+
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
 
-  const onSubmitForm = () => {
+  const handleSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+    dispatch(authSignUp({ inputState, avatar }));
+    setInputState(initialState);
+  };
+
+  const uploadAvatar = async () => {
+    const result = await DocumentPicker.getDocumentAsync({ type: "image/*" });
+    setAvatar(result.uri);
   };
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <ImageBackground
         style={styles.background}
-        source={require("../assets/images/Photo-BG.png")}
+        source={require("../../assets/images/Photo-BG.png")}
       >
         <View
           style={{
             ...styles.container,
-            paddingBottom: isShowKeyboard ? 0 : 132,
+            paddingBottom: isShowKeyboard ? 0 : 66,
           }}
         >
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.avatarPicker}
+            onPress={uploadAvatar}
+          >
+            {avatar && <Image style={styles.avatar} source={{ uri: avatar }} />}
+          </TouchableOpacity>
           <View style={styles.form}>
-            <Text style={styles.regTitle}>Войти</Text>
+            <Text style={styles.regTitle}>Регистрация</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={"Логин"}
+              value={inputState.login}
+              onFocus={() => setIsShowKeyboard(true)}
+              onChangeText={(value) =>
+                setInputState((prev) => ({ ...prev, login: value }))
+              }
+            />
             <TextInput
               style={styles.input}
               placeholder={"Адрес электронной почты"}
@@ -66,16 +96,16 @@ export const LoginScreen = ({ navigation }) => {
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.btn}
-              onPress={onSubmitForm}
+              onPress={handleSubmit}
             >
-              <Text style={styles.regBtnText}>Войти</Text>
+              <Text style={styles.regBtnText}>Зарегистрироваться</Text>
             </TouchableOpacity>
           </View>
           <Text
             style={styles.bottomText}
-            onPress={() => navigation.navigate("Registration")}
+            onPress={() => navigation.navigate("Login")}
           >
-            Нет аккаунта? Зарегистрироваться
+            Уже есть аккаунт? Войти
           </Text>
         </View>
       </ImageBackground>
@@ -90,11 +120,27 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   container: {
+    position: "relative",
     paddingTop: 92,
     width: "100%",
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+  },
+  avatarPicker: {
+    position: "absolute",
+    top: -60,
+    left: "50%",
+    transform: [{ translateX: -60 }],
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    backgroundColor: "#F6F6F6",
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
   },
   form: { marginHorizontal: 16 },
   regTitle: {

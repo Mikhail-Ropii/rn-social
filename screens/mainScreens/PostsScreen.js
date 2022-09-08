@@ -4,6 +4,9 @@ import { CommentsScreen } from "../nestedScreens/CommentsScreen";
 import { MapScreen } from "../nestedScreens/MapScreen";
 import { Feather } from "@expo/vector-icons";
 
+import { authSignOut } from "../../redux/auth/authOperations";
+import { useDispatch } from "react-redux";
+
 const NestedScreen = createStackNavigator();
 
 const headerTitleStyle = {
@@ -18,6 +21,11 @@ const headerTitleStyle = {
 };
 
 export const PostsScreen = () => {
+  dispatch = useDispatch();
+  const signOut = () => {
+    dispatch(authSignOut());
+  };
+
   return (
     <NestedScreen.Navigator>
       <NestedScreen.Screen
@@ -28,7 +36,9 @@ export const PostsScreen = () => {
           headerTitleAlign: "center",
           headerTitleStyle: headerTitleStyle,
           headerTitle: "Публикации",
-          headerRight: () => <Feather name="log-out" size={24} color="black" />,
+          headerRight: () => (
+            <Feather onPress={signOut} name="log-out" size={24} color="black" />
+          ),
         }}
       />
       <NestedScreen.Screen

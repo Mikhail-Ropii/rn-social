@@ -1,11 +1,12 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { RegistrationScreen } from "./screens/RegistrationScreen";
-import { LoginScreen } from "./screens/LoginScreen";
-import { PostsScreen } from "./screens/mainScreens/PostsScreen";
-import { CreatePostsScreen } from "./screens/mainScreens/CreatePostsScreen";
-import { ProfileScreen } from "./screens/mainScreens/ProfileScreen";
+import { RegistrationScreen } from "../screens/authScreens/RegistrationScreen";
+import { LoginScreen } from "../screens/authScreens/LoginScreen";
+import { PostsScreen } from "../screens/mainScreens/PostsScreen";
+import { CreatePostsScreen } from "../screens/mainScreens/CreatePostsScreen";
+import { ProfileScreen } from "../screens/mainScreens/ProfileScreen";
 import { StyleSheet, View } from "react-native";
+
 //icons
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -29,9 +30,8 @@ export const UseRoute = (isAuth) => {
             headerShown: false,
           }}
           name="Login"
-        >
-          {LoginScreen}
-        </AuthNavigations.Screen>
+          component={LoginScreen}
+        ></AuthNavigations.Screen>
       </AuthNavigations.Navigator>
     );
   }

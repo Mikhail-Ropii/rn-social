@@ -1,11 +1,12 @@
-import { useEffect, useCallback, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { useEffect, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
-import { UseRoute } from "./router";
+import { Main } from "./components/Main";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -13,8 +14,6 @@ export default function App() {
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
   });
-
-  const routing = UseRoute(true);
 
   useEffect(() => {
     async function prepare() {
@@ -41,7 +40,9 @@ export default function App() {
       onLayout={onLayoutRootView}
     >
       <StatusBar style="auto" />
-      <NavigationContainer>{routing}</NavigationContainer>
+      <Provider store={store}>
+        <Main />
+      </Provider>
     </KeyboardAvoidingView>
   );
 }
@@ -49,6 +50,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
   },
 });

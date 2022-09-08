@@ -9,45 +9,46 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignIn } from "../../redux/auth/authOperations";
 
 const initialState = {
-  login: "",
   email: "",
   password: "",
 };
 
-export const RegistrationScreen = ({ navigation }) => {
+export const LoginScreen = ({ navigation }) => {
   const [inputState, setInputState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
 
+  const handleSubmit = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    dispatch(authSignIn(inputState));
+    setInputState(initialState);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <ImageBackground
         style={styles.background}
-        source={require("../assets/images/Photo-BG.png")}
+        source={require("../../assets/images/Photo-BG.png")}
       >
         <View
           style={{
             ...styles.container,
-            paddingBottom: isShowKeyboard ? 0 : 66,
+            paddingBottom: isShowKeyboard ? 0 : 132,
           }}
         >
           <View style={styles.form}>
-            <Text style={styles.regTitle}>Регистрация</Text>
-            <TextInput
-              style={styles.input}
-              placeholder={"Логин"}
-              value={inputState.login}
-              onFocus={() => setIsShowKeyboard(true)}
-              onChangeText={(value) =>
-                setInputState((prev) => ({ ...prev, login: value }))
-              }
-            />
+            <Text style={styles.regTitle}>Войти</Text>
             <TextInput
               style={styles.input}
               placeholder={"Адрес электронной почты"}
@@ -70,16 +71,16 @@ export const RegistrationScreen = ({ navigation }) => {
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.btn}
-              onPress={keyboardHide}
+              onPress={handleSubmit}
             >
-              <Text style={styles.regBtnText}>Зарегистрироваться</Text>
+              <Text style={styles.regBtnText}>Войти</Text>
             </TouchableOpacity>
           </View>
           <Text
             style={styles.bottomText}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => navigation.navigate("Registration")}
           >
-            Уже есть аккаунт? Войти
+            Нет аккаунта? Зарегистрироваться
           </Text>
         </View>
       </ImageBackground>

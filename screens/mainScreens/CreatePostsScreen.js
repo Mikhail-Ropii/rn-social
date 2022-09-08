@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   TouchableOpacity,
   Image,
@@ -13,32 +12,35 @@ import { Camera } from "expo-camera";
 import { Fontisto } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { storage } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import uuid from "react-native-uuid";
+import { db } from "../../firebase/config";
+import { collection, addDoc } from "firebase/firestore";
+import { useSelector } from "react-redux";
 
 const initialState = {
   title: "",
-  location: "",
+  locationDescr: "",
 };
 
 export const CreatePostsScreen = ({ navigation }) => {
   const [inputState, setInputState] = useState(initialState);
   const [camera, setCamera] = useState();
   const [photo, setPhoto] = useState();
-  const [location, setLocation] = useState();
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const keyboardHide = async () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Permission to access location was denied");
-      return;
-    }
-    const location = await Location.getCurrentPositionAsync();
-    setLocation(location);
-    navigation.navigate("Posts");
-    setInputState(initialState);
-  };
+  const { userId, userName } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+    })();
+  }, []);
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
   if (!permission) {
@@ -50,13 +52,45 @@ export const CreatePostsScreen = ({ navigation }) => {
   }
 
   const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
-    setPhoto(photo.uri);
+    // if (photo) {
+    //   setPhoto(null);
+    //   console.log(photo);
+    //   return;
+    // }
+    const shot = await camera.takePictureAsync();
+    setPhoto(shot.uri);
   };
 
-  // const reTakePhoto = () => {
-  //   setPhoto();
-  // };
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const photoId = uuid.v4();
+    const storageRef = ref(storage, `postImage/${photoId}`);
+    await uploadBytes(storageRef, file);
+    const photoUrl = await getDownloadURL(ref(storage, `postImage/${photoId}`));
+    return photoUrl;
+  };
+
+  const sendData = async () => {
+    const photo = await uploadPhotoToServer();
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    const location = await Location.getCurrentPositionAsync();
+    try {
+      await addDoc(collection(db, "posts"), {
+        photo,
+        title: inputState.title,
+        locationDescr: inputState.locationDescr,
+        location: location.coords,
+        userId,
+        userName,
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+    navigation.navigate("Posts");
+    setInputState(initialState);
+  };
 
   return (
     <View style={styles.container}>
@@ -76,10 +110,10 @@ export const CreatePostsScreen = ({ navigation }) => {
         <TextInput
           style={styles.input}
           placeholder={"Название..."}
-          value={inputState.name}
+          value={inputState.title}
           onFocus={() => setIsShowKeyboard(true)}
           onChangeText={(value) =>
-            setInputState((prev) => ({ ...prev, name: value }))
+            setInputState((prev) => ({ ...prev, title: value }))
           }
         />
         <View style={styles.locationInputContainer}>
@@ -92,16 +126,16 @@ export const CreatePostsScreen = ({ navigation }) => {
           <TextInput
             style={styles.locationInput}
             placeholder={"Местность..."}
-            value={inputState.location}
+            value={inputState.locationDescr}
             onFocus={() => setIsShowKeyboard(true)}
             onChangeText={(value) =>
-              setInputState((prev) => ({ ...prev, location: value }))
+              setInputState((prev) => ({ ...prev, locationDescr: value }))
             }
           />
         </View>
       </View>
       <TouchableOpacity
-        onPress={keyboardHide}
+        onPress={sendData}
         activeOpacity={0.8}
         style={styles.sendButton}
       >
