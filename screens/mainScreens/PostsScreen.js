@@ -37,7 +37,12 @@ export const PostsScreen = () => {
           headerTitleStyle: headerTitleStyle,
           headerTitle: "Публикации",
           headerRight: () => (
-            <Feather onPress={signOut} name="log-out" size={24} color="black" />
+            <Feather
+              onPress={signOut}
+              name="log-out"
+              size={24}
+              color="#BDBDBD"
+            />
           ),
         }}
       />

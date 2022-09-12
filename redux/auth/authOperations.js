@@ -39,11 +39,12 @@ export const authSignUp =
         photoURL: avatar,
       });
       const user = auth.currentUser;
-      const { uid, displayName } = user;
+      const { uid, displayName, photoURL } = user;
       dispatch(
         authSlice.actions.updateUserProfile({
           userId: uid,
           userName: displayName,
+          avatar: photoURL,
         })
       );
       dispatch(authSlice.actions.stateChange({ stateChange: true }));
@@ -61,6 +62,7 @@ export const authChangeUser = () => async (dispatch, getState) => {
           authSlice.actions.updateUserProfile({
             userId: user.uid,
             userName: user.displayName,
+            avatar: user.photoURL,
           })
         );
 

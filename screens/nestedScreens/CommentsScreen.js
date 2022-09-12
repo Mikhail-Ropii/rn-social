@@ -47,7 +47,6 @@ export const CommentsScreen = ({ route }) => {
 
   useEffect(() => {
     getAllComments();
-    console.log(allComments);
   }, []);
 
   const hideKeyboard = () => {

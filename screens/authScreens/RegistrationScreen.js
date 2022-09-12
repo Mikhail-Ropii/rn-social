@@ -12,7 +12,10 @@ import {
 } from "react-native";
 import { authSignUp } from "../../redux/auth/authOperations";
 import { useDispatch } from "react-redux";
+import { storage } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from "expo-document-picker";
+import uuid from "react-native-uuid";
 
 const initialState = {
   login: "",
@@ -32,9 +35,22 @@ export const RegistrationScreen = ({ navigation }) => {
     Keyboard.dismiss();
   };
 
-  const handleSubmit = () => {
+  const uploadAvatarToServer = async () => {
+    const response = await fetch(avatar);
+    const file = await response.blob();
+    const avatarId = uuid.v4();
+    const storageRef = ref(storage, `avatarImage/${avatarId}`);
+    await uploadBytes(storageRef, file);
+    const avatarUrl = await getDownloadURL(
+      ref(storage, `avatarImage/${avatarId}`)
+    );
+    return avatarUrl;
+  };
+
+  const handleSubmit = async () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+    const avatar = await uploadAvatarToServer();
     dispatch(authSignUp({ inputState, avatar }));
     setInputState(initialState);
   };

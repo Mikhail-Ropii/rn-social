@@ -9,14 +9,25 @@ import {
   ImageBackground,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import { db } from "../../firebase/config";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import { authSignOut } from "../../redux/auth/authOperations";
+import { useDispatch } from "react-redux";
+// icons
+import { Feather } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 export const ProfileScreen = ({ navigation }) => {
-  const { userId, userName } = useSelector((state) => state.auth);
+  const { userId, userName, avatar } = useSelector((state) => state.auth);
   const [userPosts, setUserPosts] = useState([]);
+
+  console.log(avatar);
+
+  dispatch = useDispatch();
+  const signOut = () => {
+    dispatch(authSignOut());
+  };
 
   const getUserPosts = async () => {
     const q = query(collection(db, "posts"), where("userId", "==", userId));
@@ -27,7 +38,6 @@ export const ProfileScreen = ({ navigation }) => {
 
   useEffect(() => {
     getUserPosts();
-    console.log(userPosts);
   }, []);
 
   return (
@@ -36,7 +46,21 @@ export const ProfileScreen = ({ navigation }) => {
       source={require("../../assets/images/Photo-BG.png")}
     >
       <View style={styles.container}>
-        <Image style={styles.avatar} />
+        <Image
+          source={
+            avatar
+              ? { uri: avatar }
+              : require("../../assets/images/placeholder.png")
+          }
+          style={styles.avatar}
+        />
+        <Feather
+          style={styles.signOutIcon}
+          onPress={signOut}
+          name="log-out"
+          size={24}
+          color="#BDBDBD"
+        />
         <Text style={styles.userName}>{userName}</Text>
         {userPosts && (
           <FlatList
@@ -55,11 +79,11 @@ export const ProfileScreen = ({ navigation }) => {
                       })
                     }
                   >
-                    <FontAwesome5
+                    <FontAwesome
                       style={styles.commentIcon}
                       name="comment"
                       size={24}
-                      color="#BDBDBD"
+                      color="#FF6C00"
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -104,11 +128,19 @@ const styles = StyleSheet.create({
     marginTop: 147,
   },
   avatar: {
+    borderWidth: 5,
     position: "absolute",
-    top: "50%",
+    top: -60,
+    left: "50%",
+    transform: [{ translateX: -60 }],
     width: 120,
     height: 120,
     borderRadius: 16,
+  },
+  signOutIcon: {
+    top: 22,
+    right: 16,
+    position: "absolute",
   },
   userName: {
     fontFamily: "Roboto-Medium",
