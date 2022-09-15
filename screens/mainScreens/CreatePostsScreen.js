@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Keyboard,
+  Alert,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Fontisto } from "@expo/vector-icons";
@@ -86,6 +87,7 @@ export const CreatePostsScreen = ({ navigation }) => {
         userName,
       });
     } catch (e) {
+      Alert.alert("Error adding document: ", e.message);
       console.error("Error adding document: ", e);
     }
     navigation.navigate("Posts");
