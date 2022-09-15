@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { authSlice } from "./authReducer";
+import { Alert } from "react-native";
 
 export const authSignIn =
   ({ email, password }) =>
@@ -21,6 +22,7 @@ export const authSignIn =
       );
       dispatch(authSlice.actions.stateChange({ stateChange: true }));
     } catch (error) {
+      Alert.alert(error.message);
       console.log(error);
     }
   };
@@ -28,12 +30,9 @@ export const authSignIn =
 export const authSignUp =
   ({ inputState, avatar }) =>
   async (dispatch, getState) => {
+    const { email, password } = inputState;
     try {
-      await createUserWithEmailAndPassword(
-        auth,
-        inputState.email,
-        inputState.password
-      );
+      await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(auth.currentUser, {
         displayName: inputState.login,
         photoURL: avatar,
@@ -49,6 +48,7 @@ export const authSignUp =
       );
       dispatch(authSlice.actions.stateChange({ stateChange: true }));
     } catch (error) {
+      Alert.alert(error.message);
       console.log(error);
     }
   };
@@ -70,6 +70,7 @@ export const authChangeUser = () => async (dispatch, getState) => {
       }
     });
   } catch (error) {
+    Alert.alert(error.message);
     console.log(error);
   }
 };
@@ -79,6 +80,7 @@ export const authSignOut = () => async (dispatch, getState) => {
     await signOut(auth);
     dispatch(authSlice.actions.authSignOut());
   } catch (error) {
+    Alert.alert(error.message);
     console.log(error);
   }
 };

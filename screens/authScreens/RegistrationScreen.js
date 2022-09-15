@@ -51,7 +51,7 @@ export const RegistrationScreen = ({ navigation }) => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     const avatar = await uploadAvatarToServer();
-    dispatch(authSignUp({ inputState, avatar }));
+    dispatch(authSignUp(inputState, avatar));
     setInputState(initialState);
   };
 
