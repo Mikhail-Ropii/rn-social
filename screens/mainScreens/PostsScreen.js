@@ -2,6 +2,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { DefaultPostsScreen } from "../nestedScreens/DefaultPostsScreen";
 import { CommentsScreen } from "../nestedScreens/CommentsScreen";
 import { MapScreen } from "../nestedScreens/MapScreen";
+import { UpdatePostScreen } from "../nestedScreens/UpdatePostScreen";
+//icons
 import { Feather } from "@expo/vector-icons";
 
 import { authSignOut } from "../../redux/auth/authOperations";
@@ -62,6 +64,15 @@ export const PostsScreen = () => {
           headerTitleAlign: "center",
           headerTitleStyle: headerTitleStyle,
           headerTitle: "Локация",
+        }}
+      />
+      <NestedScreen.Screen
+        name="UpdatePost"
+        component={UpdatePostScreen}
+        options={{
+          headerTitleAlign: "center",
+          headerTitleStyle: headerTitleStyle,
+          headerTitle: "Редактировать",
         }}
       />
     </NestedScreen.Navigator>

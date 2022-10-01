@@ -10,8 +10,10 @@ import {
   Alert,
 } from "react-native";
 import { Camera } from "expo-camera";
+//icons
 import { Fontisto } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
+//
 import * as Location from "expo-location";
 import { storage } from "../../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";

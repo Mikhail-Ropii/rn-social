@@ -68,7 +68,19 @@ export const ProfileScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.postCard}>
-                <Image style={styles.photo} source={{ uri: item.photo }} />
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() =>
+                    navigation.navigate("UpdatePost", {
+                      postId: item.id,
+                      photo: item.photo,
+                      title: item.title,
+                      locationDescr: item.locationDescr,
+                    })
+                  }
+                >
+                  <Image style={styles.photo} source={{ uri: item.photo }} />
+                </TouchableOpacity>
                 <Text style={styles.title}>{item.title}</Text>
                 <View style={styles.linkContainer}>
                   <TouchableOpacity
