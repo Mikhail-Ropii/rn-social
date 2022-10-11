@@ -12,11 +12,13 @@ import {
 } from "react-native";
 //icons
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 //
 import { db } from "../../firebase/config";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { async } from "@firebase/util";
 
-export const UpdatePostScreen = ({ route }) => {
+export const UpdatePostScreen = ({ route, navigation }) => {
   const { title, locationDescr, postId, photo } = route.params;
   const [inputState, setInputState] = useState({ title, locationDescr });
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -26,7 +28,30 @@ export const UpdatePostScreen = ({ route }) => {
     Keyboard.dismiss();
   };
 
-  const sendData = () => {};
+  const handleSendData = async () => {
+    const postRef = doc(db, "posts", postId);
+    try {
+      await updateDoc(postRef, {
+        capital: true,
+        title: inputState.title,
+        locationDescr: inputState.locationDescr,
+      });
+    } catch (e) {
+      Alert.alert("Error updating document: ", e.message);
+      console.error("Error updating document: ", e);
+    }
+    navigation.navigate("Profile");
+  };
+
+  const handleDeletePost = async () => {
+    try {
+      await deleteDoc(doc(db, "posts", postId));
+    } catch (e) {
+      Alert.alert("Error deleting document: ", e.message);
+      console.error("Error deleting document: ", e);
+    }
+    navigation.navigate("Profile");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
@@ -61,11 +86,18 @@ export const UpdatePostScreen = ({ route }) => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={sendData}
+          onPress={handleSendData}
           activeOpacity={0.8}
           style={styles.sendButton}
         >
           <Text style={styles.buttonText}>Сохранить</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleDeletePost}
+          activeOpacity={0.8}
+          style={styles.deleteBtn}
+        >
+          <Feather name="trash-2" size={24} color="white" />
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
@@ -125,5 +157,16 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     textAlign: "center",
     color: "#FFFFFF",
+  },
+  deleteBtn: {
+    marginTop: 40,
+    marginRight: "auto",
+    marginLeft: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FF6C00",
+    borderRadius: 20,
+    width: 70,
+    height: 40,
   },
 });

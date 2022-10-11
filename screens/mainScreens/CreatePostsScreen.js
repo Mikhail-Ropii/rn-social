@@ -74,7 +74,7 @@ export const CreatePostsScreen = ({ navigation }) => {
     return photoUrl;
   };
 
-  const sendData = async () => {
+  const handleSendData = async () => {
     const photo = await uploadPhotoToServer();
     setIsShowKeyboard(false);
     Keyboard.dismiss();
@@ -139,7 +139,7 @@ export const CreatePostsScreen = ({ navigation }) => {
         </View>
       </View>
       <TouchableOpacity
-        onPress={sendData}
+        onPress={handleSendData}
         activeOpacity={0.8}
         style={styles.sendButton}
       >

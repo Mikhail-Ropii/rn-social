@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   postCard: {
-    marginBottom: 35,
+    marginTop: 32,
   },
   photo: {
     minWidth: 343,
